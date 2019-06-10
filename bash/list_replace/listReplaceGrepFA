@@ -1,0 +1,8 @@
+#!/bin/bash
+
+paramFile=${1};
+for file in $(grep -lri fa- --include \*js --include \*tag  --include \*java --include \*js --include \*jsp);
+do
+  echo -e "\n\n\nPerforming listReplace for file $file"
+  echo y | listReplace $paramFile $file
+done;

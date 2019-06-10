@@ -1,0 +1,46 @@
+#!/bin/bash
+
+#Replace line function
+replace_line() {
+	local file=$1
+	local search=$2
+	#All values from 3rd parameter onwards (line can have multiple parameters!)
+	local replace=${@:3}
+	perl -i -pe "s/\b$search\b/$replace/g" $file
+}
+
+print_help(){
+	echo EXECUTION: listReplace parameter_file origin_file
+	echo " parameter_file - file containing find & replace values separated with space. eg.(old_value new_value)"
+	echo " origin_file    - file that you want to perform search & replace on" 
+}
+
+if [ "$#" -ne 2 ]; then
+	print_help
+        exit -1
+fi
+param_file=${1}
+origin_file=${2}
+replace_file=${origin_file}.new
+cp $origin_file  $replace_file & echo Created file $replace_file 
+#dos2unix $param_file
+while IFS='' read -r line || [[ -n "$line" ]]; do
+    #Skip search arguments that start with '#'
+	if [[ ${line:0:1} == '#' ]]
+	then
+		continue 
+	fi
+    replace_line $replace_file $line
+done < "$param_file"
+#unix2dos $param_file
+echo Mass replacement finished. Please see the output DIFF
+diff $origin_file $replace_file
+echo -n "Do you want to keep changes (y/n)? "
+read answer
+if [ "$answer" != "${answer#[Yy]}" ] ;then
+    echo Applying changes 
+    mv $replace_file $origin_file
+else
+    echo Changes discarted
+    rm $replace_file
+fi

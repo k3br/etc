@@ -1,0 +1,8 @@
+#!/bin/bash
+
+paramFile=${1};
+for file in $(listReplaceFind $paramFile | cut -d ":" -f1 | sort -u);
+do
+  echo -e "\n\n\nPerforming listReplace for file $file"
+  listReplace $paramFile $file
+done;

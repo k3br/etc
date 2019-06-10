@@ -1,0 +1,38 @@
+#!/bin/bash
+print_help(){
+        echo EXECUTION: findReplacableFiles parameter_file [file]
+        echo " parameter_file - file containing find & replace values separated with space. eg.(old_value new_value)"
+        echo " file           - specific file you want to search"
+}
+
+if [ "$#" -lt 1 ]; then
+        print_help
+        exit -1
+fi
+param_file=${1}
+file_name=${2}
+tmp_search_file=tmp$(date +%s%N).log
+#dos2unix $param_file
+while IFS='' read -r line || [[ -n "$line" ]]; do
+    #Skip search arguments that start with '#'
+	if [[ ${line:0:1} == '#' ]]
+	then
+		continue 
+	fi
+	#grep for first parameter in line
+	params=($line)
+	if [ -z "$file_name" ]
+	then
+		  grep -r "${params[0]} " --exclude=$tmp_search_file --exclude=$param_file >> $tmp_search_file
+		  grep -r "\"${params[0]}" --exclude=$tmp_search_file --exclude=$param_file >> $tmp_search_file
+		  grep -r "${params[0]}\"" --exclude=$tmp_search_file --exclude=$param_file >> $tmp_search_file
+	else
+		  grep -r " ${params[0]} " $file_name --exclude=$tmp_search_file --exclude=$param_file >> $tmp_search_file
+		  grep -r "\"${params[0]}" $file_name --exclude=$tmp_search_file --exclude=$param_file >> $tmp_search_file
+		  grep -r "${params[0]}\"" $file_name --exclude=$tmp_search_file --exclude=$param_file >> $tmp_search_file
+	fi 
+	
+done < "$param_file"
+#unix2dos $param_file
+cat $tmp_search_file | sort -u
+rm $tmp_search_file

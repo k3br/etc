@@ -1,0 +1,10 @@
+.panel-warning  .card bg-warning
+.panel-title  .card-title
+.panel-success  .card .bg-success .text-white
+.panel-primary  .card .bg-primary .text-white
+.panel-info  .card .text-white .bg-info
+.panel-heading  .card-header
+.panel-footer  .card-footer
+.panel-danger  .card .bg-danger .text-white
+.panel-body  .card-body
+.panel  .card

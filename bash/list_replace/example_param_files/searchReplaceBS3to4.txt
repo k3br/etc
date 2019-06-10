@@ -1,0 +1,40 @@
+well  card card-body
+visible-xs  d-block d-sm-none
+visible-sm  d-none d-sm-block d-md-none
+visible-md  d-none d-md-block d-lg-none
+visible-lg  d-none d-lg-block d-xl-none
+thumbnail  card card-body
+table-condensed  table-sm
+pull-right  float-right
+pull-left  float-left
+panel-warning  card bg-warning
+panel-title  card-title
+panel-success  card bg-success text-white
+panel-primary  card bg-primary text-white
+panel-info  card text-white bg-info
+panel-heading  card-header
+panel-footer  card-footer
+panel-danger  card bg-danger text-white
+panel-body  card-body
+panel  card
+navbar-right  ml-auto
+navbar-fixed-top  fixed-top
+navbar-btn  nav-item
+nav-stacked  flex-column
+#item  carousel-item
+input-sm  form-control-sm
+input-lg  form-control-lg
+img-rounded  rounded
+img-responsive  img-fluid
+img-circle  rounded-circle
+hidden-xs  d-none
+hidden-sm  d-sm-none
+hidden-md  d-md-none
+hidden-lg  d-lg-none
+help-block  form-text
+form-horizontal  
+control-label  col-form-label
+center-block  mx-auto d-block
+btn-default btn-light
+badge  badge badge-pill
+page-header pb-2 mt-4 mb-2 border-bottom
