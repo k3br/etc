@@ -1,0 +1,54 @@
+with seg as (
+  select owner,
+         segment_name,
+         partition_name,
+         segment_type,
+         tablespace_name,
+         bytes,
+         round(bytes/1024/1024, 2) mb,
+         extents
+  from   dba_segments
+  where  tablespace_name = 'KATASTER'
+),
+lob_map as (
+  select owner,
+         table_name,
+         column_name,
+         segment_name,
+         index_name
+  from   dba_lobs
+),
+sdo_map as (
+  select m.sdo_index_owner,
+         m.sdo_index_name,
+         m.sdo_index_table,
+         ic.table_owner,
+         ic.table_name,
+         ic.column_name
+  from   mdsys.sdo_index_metadata_table m
+  left join dba_ind_columns ic
+         on ic.index_owner = m.sdo_index_owner
+        and ic.index_name  = m.sdo_index_name
+)
+select case
+         when s.segment_type like 'LOB%' then 'LOB'
+         when s.segment_name like 'MDRT\_%$' escape '\' then 'SPATIAL_MDRT'
+         else s.segment_type
+       end as object_kind,
+       s.owner as segment_owner,
+       decode(s.partition_name, null, s.segment_name, s.segment_name || ':' || s.partition_name) as segment_object,
+       s.segment_type,
+       s.mb,
+       s.bytes,
+       s.extents,
+       coalesce(l.table_name, sm.table_name, s.segment_name) as table_name,
+       coalesce(l.column_name, sm.column_name) as column_name,
+       coalesce(l.index_name, sm.sdo_index_name) as related_index
+from   seg s
+left join lob_map l
+       on l.owner = s.owner
+      and (l.segment_name = s.segment_name or l.index_name = s.segment_name)
+left join sdo_map sm
+       on sm.sdo_index_owner = s.owner
+      and sm.sdo_index_table = s.segment_name
+order by s.bytes desc;
